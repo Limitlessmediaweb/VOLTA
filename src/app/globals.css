@@ -1,0 +1,469 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   VOLTA — design token
+   Tema scuro di default; tema chiaro con [data-theme="light"].
+   --light è la "luce" (aloni, filamenti, bordi); --light-text è la
+   variante con contrasto AA per testo piccolo.
+---------------------------------------------------------------- */
+:root {
+  --bg: #0a0908;
+  --surface: #141210;
+  --surface-2: #1c1915;
+  --fg: #fff6e5;
+  --muted: #b8ad9b;
+  --line: rgb(255 246 229 / 0.12);
+  --line-strong: rgb(255 246 229 / 0.24);
+  --light: #ffc857;
+  --light-text: #ffc857;
+  --glow: rgb(255 200 87 / 0.32);
+  --alarm: #e5484d;
+  --alarm-text: #ff8f92;
+  --on-light: #0a0908;
+  --room-off: #12100e;
+  --sky: #0d0c14;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #faf6ee;
+  --surface: #f1eadc;
+  --surface-2: #e8dfcc;
+  --fg: #1a1610;
+  --muted: #5e5446;
+  --line: rgb(26 22 16 / 0.14);
+  --line-strong: rgb(26 22 16 / 0.28);
+  --light: #b27a00;
+  --light-text: #8a5d00;
+  --glow: rgb(178 122 0 / 0.2);
+  --alarm: #c2373c;
+  --alarm-text: #a82a2f;
+  --on-light: #fff6e5;
+  --room-off: #e3d9c6;
+  --sky: #cfd8e3;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-light: var(--light);
+  --color-light-text: var(--light-text);
+  --color-alarm: var(--alarm);
+  --color-alarm-text: var(--alarm-text);
+  --color-on-light: var(--on-light);
+  --font-display: var(--font-syne), ui-sans-serif, system-ui;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Variabili registrate: interpolazione fluida del cono di luce. */
+@property --spot-inner {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --spot-outer {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+/* ---------------- Base ---------------- */
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 6rem;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+::selection {
+  background: var(--light);
+  color: var(--on-light);
+}
+:focus-visible {
+  outline: 2px solid var(--light-text);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+a {
+  text-underline-offset: 0.2em;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@layer components {
+/* ---------------- Tipografia fluida ---------------- */
+.t-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(2.7rem, 9.2vw, 9rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.t-h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 7vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(1.9rem, 5vw, 4.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+}
+.t-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.t-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 38ch;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------------- Layout ---------------- */
+.wrap {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 56px);
+}
+.section {
+  padding-block: clamp(5rem, 12vw, 10rem);
+}
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+}
+
+/* Segnaposto visibili */
+.tbd {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  color: var(--light-text);
+  background: color-mix(in oklab, var(--light) 12%, transparent);
+  border: 1px dashed color-mix(in oklab, var(--light) 55%, transparent);
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+  white-space: nowrap;
+}
+
+/* ---------------- Pulsanti ---------------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 48px;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  transition:
+    box-shadow 0.4s var(--ease-out-expo),
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
+  isolation: isolate;
+}
+/* Primario: non un riempimento piatto, ma un bulbo di luce. */
+.btn-primary {
+  color: var(--on-light);
+  background:
+    radial-gradient(120% 140% at 50% 0%, #fff3cf 0%, var(--light) 45%, color-mix(in oklab, var(--light) 80%, #8a5200) 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--light) 70%, transparent),
+    0 10px 40px -10px var(--glow);
+}
+.btn-primary:hover {
+  box-shadow:
+    0 0 0 1px var(--light),
+    0 14px 60px -8px var(--glow),
+    0 0 90px -20px var(--light);
+}
+:root[data-theme="light"] .btn-primary {
+  color: #fff6e5;
+  background: radial-gradient(120% 140% at 50% 0%, #3a2f20 0%, #1a1610 70%);
+  box-shadow:
+    0 0 0 1px #1a1610,
+    0 10px 40px -12px var(--glow);
+}
+.btn-alarm {
+  color: var(--alarm-text);
+  border: 1px solid color-mix(in oklab, var(--alarm) 75%, transparent);
+  background: color-mix(in oklab, var(--alarm) 10%, transparent);
+}
+.btn-alarm:hover {
+  background: color-mix(in oklab, var(--alarm) 18%, transparent);
+  box-shadow: 0 0 40px -10px var(--alarm);
+}
+.btn-ghost {
+  color: var(--fg);
+  border: 1px solid var(--line-strong);
+}
+.btn-ghost:hover {
+  border-color: var(--light);
+  box-shadow: 0 0 40px -14px var(--glow);
+}
+
+/* ---------------- Badge demo ---------------- */
+.demo-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--light-text);
+}
+
+}
+
+/* ---------------- Spotlight ---------------- */
+.spot {
+  --mx: 50%;
+  --my: 40%;
+  --spot-inner: 0px;
+  --spot-outer: 0px;
+}
+.spot.is-lit {
+  --spot-inner: clamp(90px, 14vw, 200px);
+  --spot-outer: clamp(240px, 32vw, 460px);
+}
+.spot-reveal {
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 var(--spot-inner, 0px), transparent var(--spot-outer, 0px));
+  mask-image: radial-gradient(circle at var(--mx) var(--my), #000 var(--spot-inner, 0px), transparent var(--spot-outer, 0px));
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transition:
+    --spot-inner 0.6s var(--ease-out-expo),
+    --spot-outer 0.6s var(--ease-out-expo);
+}
+.spot-aura {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 70vmax;
+  height: 70vmax;
+  margin: -35vmax 0 0 -35vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--light) 22%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+.spot.is-lit .spot-aura {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spot-reveal,
+  .spot-aura {
+    display: none;
+  }
+}
+
+/* ---------------- Intro ---------------- */
+.intro {
+  display: none;
+}
+html[data-intro="1"] .intro {
+  display: block;
+  animation: intro-failsafe 0.4s 7s forwards;
+}
+html[data-intro="1"] body {
+  overflow: hidden;
+}
+@keyframes intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ---------------- Marquee ---------------- */
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------------- Casa / stanze ---------------- */
+.room-glow,
+.room-lamp {
+  transition: opacity 0.6s;
+}
+[data-lit="false"] .room-glow,
+[data-lit="false"] .room-lamp {
+  opacity: 0;
+}
+
+/* Passi fissati: senza JS (o con reduced-motion) si leggono come lista. */
+.steps-stack {
+  display: grid;
+  gap: 2.5rem;
+}
+.is-enhanced .steps-stack {
+  gap: 0;
+}
+.is-enhanced .steps-stack > * {
+  grid-area: 1 / 1;
+}
+
+/* ---------------- Page transition (View Transitions API) ---------------- */
+::view-transition-old(root) {
+  animation: vt-out 0.35s var(--ease-out-expo) both;
+}
+::view-transition-new(root) {
+  animation: vt-in 0.55s var(--ease-out-expo) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    filter: brightness(0.4);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    filter: brightness(1.6);
+  }
+}
+
+/* ---------------- Movimento ridotto ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
+
+@layer components {
+/* Form */
+.field {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--fg);
+  font: inherit;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+.field::placeholder {
+  color: color-mix(in oklab, var(--muted) 80%, transparent);
+}
+.field:focus-visible {
+  outline: none;
+  border-color: var(--light);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--light) 30%, transparent);
+}
+.field[aria-invalid="true"] {
+  border-color: var(--alarm);
+}
+
+/* Prose legale */
+.prose-legal h2 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.35rem;
+  margin-top: 2.75rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+.prose-legal p,
+.prose-legal li {
+  color: var(--muted);
+  max-width: 70ch;
+}
+.prose-legal ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.35rem;
+  margin-block: 0.75rem;
+}
+.prose-legal p + p {
+  margin-top: 0.75rem;
+}
+
+}
+
+/* Stato iniziale degli elementi animati (solo con JS e movimento consentito).
+   Failsafe: se GSAP non parte, dopo 2,5 s tornano comunque visibili. */
+html.motion [data-anim]:not([data-anim-ready]),
+html.motion [data-anim-group]:not([data-anim-ready]) > * {
+  opacity: 0;
+  animation: anim-failsafe 0.01s 2.5s forwards;
+}
+/* Titoli LCP: quasi invisibili ma dipinti (opacity 0 escluderebbe l'elemento dall'LCP). */
+html.motion [data-anim="lcp"]:not([data-anim-ready]) {
+  opacity: 0.02;
+}
+@keyframes anim-failsafe {
+  to {
+    opacity: 1;
+  }
+}
