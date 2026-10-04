@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Spot video: script Node/browser separati dal sito
+    "video-tiktok/**",
   ]),
 ]);
 

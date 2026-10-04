@@ -45,3 +45,10 @@ next-env.d.ts
 lh.json
 !.env.example
 .claude/
+
+# spot video: fotogrammi intermedi (rigenerabili con gli script)
+video-tiktok/frames/
+video-tiktok/preview/
+video-tiktok/clips/*/frames/
+video-tiktok/check/*.png
+video-tiktok/clips/*-sheet.jpg
